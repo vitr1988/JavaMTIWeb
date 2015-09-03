@@ -1,39 +1,31 @@
 package ru.mti.edu.jdbc;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
 
-import oracle.jdbc.driver.OracleDriver;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
 
 public class Db {
 
-	public static Connection getConnection() {
+	public static Connection getConnection(HttpServletRequest req) {
 		try {
-//			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Class.forName("oracle.jdbc.driver.OracleDriver");
 			// �� �� ����� �������� �������� ����
-			OracleDriver driver = new OracleDriver();
-			DriverManager.registerDriver(driver);
-			
-//			DataSource dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/orcl");
-//			dataSource.getConnection();
+//			OracleDriver driver = new OracleDriver();
+//			DriverManager.registerDriver(driver);
+			DataSource ds = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/MTIDB");
+			return ds.getConnection();
 			
 //			Properties prop = new Properties();
-//			prop.load(new FileInputStream("src/ru/mti/edu/jdbc/dbinfo.properties"));
-			return DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/orcl", "scott", "tiger");
-//		} catch (ClassNotFoundException e) {
-//			e.printStackTrace();
+//			prop.load(new FileInputStream(req.getServletContext().getRealPath("WEB-INF/classes/ru/mti/edu/jdbc/dbinfo.properties")));
+//			return DriverManager.getConnection(prop.getProperty("db.url"), prop.getProperty("db.login"), prop.getProperty("db.password"));
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 //		} catch (FileNotFoundException e) {
@@ -42,6 +34,8 @@ public class Db {
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
+		} catch (NamingException e) {
+			e.printStackTrace();
 		} 
 		
 		return null;
